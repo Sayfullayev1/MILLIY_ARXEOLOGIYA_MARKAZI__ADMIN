@@ -1,6 +1,50 @@
 import axios from 'axios';
 
-const API_BASE_URL = 'http://localhost:3113'; // Базовый URL для API
+// const API_BASE_URL = 'https://milliy-arxeologiya-markazi-admin-api.onrender.com'; // Базовый URL для API
+
+
+
+const API_BASE_URL = 'https://milliy-arxeologiya-markazi-admin-api.onrender.com';
+
+
+
+
+export const passwordCheck = ( navigate, username, password, setErrorCode) => {
+
+    const codeData = {
+      name: username,
+      code: password,
+    };
+
+    if (username === '' || password === '') {
+      setErrorCode('Заполните все поля');
+      
+    } else {
+      axios.post(`${API_BASE_URL}/api/login`, codeData)
+        .then(response => {
+          // Обрабатываем успешный ответ
+          // console.log(response.data);
+
+          if (response.data.valid) {
+            const token = response.data.token;
+            localStorage.setItem('token', token);
+            navigate('/');
+          } else{
+            setErrorCode('Неверный логин или пароль');
+          }
+          
+        })
+        .catch(error => {
+          // Обрабатываем ошибку
+          // console.error('Ошибка при выполнении запроса:', error);
+          
+        });
+    }
+
+};
+
+
+
 
 export const checkToken = (token, navigate) => {
     if (token) {

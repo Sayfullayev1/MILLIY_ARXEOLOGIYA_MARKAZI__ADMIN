@@ -2,6 +2,7 @@ import React, { useRef, useState } from 'react';
 import './loginPage.scss';
 import axios from 'axios';
 import { useNavigate } from 'react-router-dom';
+import { passwordCheck } from '../../api/api';
 
 export default function LoginPage() {
   const navigate = useNavigate();
@@ -11,41 +12,41 @@ export default function LoginPage() {
   const [errorCode, setErrorCode] = useState('');
   
 
-  const handleLogin = () => {
-    const api = 'http://localhost:3113';
+  // const handleLogin = () => {
+  //   const api = 'http://localhost:3210';
 
-    const codeData = {
-      name: username,
-      code: password,
-    };
+  //   const codeData = {
+  //     name: username,
+  //     code: password,
+  //   };
 
-    if (username === '' || password === '') {
-      setErrorCode('Заполните все поля');
+  //   if (username === '' || password === '') {
+  //     setErrorCode('Заполните все поля');
       
-    } else {
-      axios.post(`${api}/api/login`, codeData)
-        .then(response => {
-          // Обрабатываем успешный ответ
-          // console.log(response.data);
+  //   } else {
+  //     axios.post(`${api}/api/login`, codeData)
+  //       .then(response => {
+  //         // Обрабатываем успешный ответ
+  //         // console.log(response.data);
 
-          if (response.data.valid) {
-            const token = response.data.token;
-            localStorage.setItem('token', token);
-            navigate('/');
-          } else{
-            setErrorCode('Неверный логин или пароль');
-          }
+  //         if (response.data.valid) {
+  //           const token = response.data.token;
+  //           localStorage.setItem('token', token);
+  //           navigate('/');
+  //         } else{
+  //           setErrorCode('Неверный логин или пароль');
+  //         }
           
-        })
-        .catch(error => {
-          // Обрабатываем ошибку
-          // console.error('Ошибка при выполнении запроса:', error);
+  //       })
+  //       .catch(error => {
+  //         // Обрабатываем ошибку
+  //         // console.error('Ошибка при выполнении запроса:', error);
           
-        });
-    }
+  //       });
+  //   }
 
     
-  };
+  // };
 
   const inputRef2 = useRef(null);
 
@@ -58,7 +59,7 @@ export default function LoginPage() {
   };
   const handleKeyDownInputRef2 = (event) => {
     if (event.key === 'Enter') {
-      handleLogin();
+      passwordCheck(navigate, username, password, setErrorCode);
     }
   };
 
@@ -85,7 +86,9 @@ export default function LoginPage() {
             onChange={(e) => setPassword(e.target.value)}
           />
         <div className='error-message'>{errorCode}</div>
-        <button onClick={() => handleLogin()}>Войти</button>
+        <button onClick={() => passwordCheck(navigate, username, password, setErrorCode)}>
+          Войти
+        </button>
       </div>
     </div>
   );
