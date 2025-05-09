@@ -1,0 +1,67 @@
+.header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 10px 20px;
+  background-color: #007bff;
+  border-bottom: 1px solid #dee2e6;
+  color: #fff;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.header__logo {
+  font-size: 24px;
+  font-weight: bold;
+}
+
+.header__nav ul {
+  list-style: none;
+  display: flex;
+  gap: 1.5rem;
+}
+
+.header__nav a {
+  color: #fff;
+  text-decoration: none;
+  font-weight: 500;
+}
+
+.header__nav a:hover {
+  text-decoration: underline;
+}
+
+.header__controls {
+  display: flex;
+  align-items: center;
+}
+
+.header__language-switcher {
+  display: flex;
+  align-items: center;
+  margin-right: 20px;
+}
+
+.header__language-switcher select {
+  background: none;
+  border: 1px solid #fff;
+  color: #fff;
+  padding: 0.5rem;
+  cursor: pointer;
+  appearance: none;
+  -webkit-appearance: none;
+  -moz-appearance: none;
+  border-radius: 4px;
+}
+
+.header__language-switcher select:hover {
+  background-color: #0056b3;
+}
+
+.header__logout h3 {
+  margin: 0;
+  cursor: pointer;
+}
+
+.header__logout h3:hover {
+  text-decoration: underline;
+}
