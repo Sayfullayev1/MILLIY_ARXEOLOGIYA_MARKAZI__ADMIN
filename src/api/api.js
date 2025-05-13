@@ -1,10 +1,10 @@
 import axios from 'axios';
 
-// const API_BASE_URL = 'https://milliy-arxeologiya-markazi-admin-api.onrender.com'; // Базовый URL для API
+const API_BASE_URL = 'https://milliy-arxeologiya-markazi-admin-api.onrender.com'; // Базовый URL для API
 
 
 
-const API_BASE_URL = 'https://milliy-arxeologiya-markazi-admin-api.onrender.com';
+// const API_BASE_URL = 'http://localhost:3220';
 
 
 
@@ -55,7 +55,7 @@ export const checkToken = (token, navigate) => {
           })
           .then((response) => {
             if (!response.data.valid) {
-              localStorage.removeItem('token'); // Удаляем недействительный токен
+              // localStorage.removeItem('token'); // Удаляем недействительный токен
               navigate('/login'); // Перенаправляем на страницу логина
             }
           })
@@ -98,35 +98,4 @@ export const fetchItems = async (token) => {
   }
 };
 
-// Добавление нового объекта
-export const addItem = async (item) => {
-  try {
-    const response = await axios.post(`${API_BASE_URL}/add`, item);
-    return response.data;
-  } catch (error) {
-    console.error('Ошибка при добавлении объекта:', error);
-    throw error;
-  }
-};
 
-// Обновление объекта
-export const updateItem = async (id, updatedData) => {
-  try {
-    const response = await axios.put(`${API_BASE_URL}/update/${id}`, updatedData);
-    return response.data;
-  } catch (error) {
-    console.error('Ошибка при обновлении объекта:', error);
-    throw error;
-  }
-};
-
-// Удаление объекта
-export const deleteItem = async (id) => {
-  try {
-    const response = await axios.delete(`${API_BASE_URL}/delete/${id}`);
-    return response.data;
-  } catch (error) {
-    console.error('Ошибка при удалении объекта:', error);
-    throw error;
-  }
-};

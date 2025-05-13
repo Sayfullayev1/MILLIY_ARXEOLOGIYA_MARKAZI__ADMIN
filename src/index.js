@@ -13,7 +13,10 @@ import LoginPage from './pages/loginPage/LoginPage';
 
 
 
-import Test from './pages/test/Test';
+import NewsPage from './pages/newsPages/newsPage/NewsPage';
+
+
+
 
 
 
@@ -31,9 +34,8 @@ root.render(
             <Route path="/" element={<HomePage />} />
             <Route path="/:lang" element={<HomePage />} />
 
-            <Route path="/test" element={<Test />} />
-            <Route path="/:lang/test" element={<Test />} />
             
+            <Route path="/:lang/news" element={<NewsPage />} />
 
           </Route>
 

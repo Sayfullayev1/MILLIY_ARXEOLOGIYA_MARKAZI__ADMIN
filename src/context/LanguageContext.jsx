@@ -14,11 +14,8 @@ export const LanguageProvider = ({ children }) => {
 
   const changeLanguage = (lang) => {  
     setLanguage(lang);
-    if (lang === 'uz') {
-      navigate('/');
-    } else {
-      navigate(`/${lang}`);
-    }
+    
+    navigate(`/${lang}`);
   };
 
   return (

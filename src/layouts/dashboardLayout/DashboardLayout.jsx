@@ -12,7 +12,7 @@ export default function DashboardLayout() {
             {/* <div className='outlet-container'> */}
             <Outlet/>
             {/* </div> */}
-        <FooterComponent/> 
+        {/* <FooterComponent/>  */}
     </div>
   )
 }
