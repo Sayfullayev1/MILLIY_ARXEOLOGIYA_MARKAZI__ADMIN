@@ -14,6 +14,7 @@ import LoginPage from './pages/loginPage/LoginPage';
 
 
 import NewsPage from './pages/newsPages/newsPage/NewsPage';
+import PhotoGalleryPage from './pages/newsPages/photoGalleryPage/PhotoGalleryPage';
 
 
 
@@ -36,6 +37,8 @@ root.render(
 
             
             <Route path="/:lang/news" element={<NewsPage />} />
+
+            <Route path="/:lang/photo-gallery" element={<PhotoGalleryPage />} />
 
           </Route>
 

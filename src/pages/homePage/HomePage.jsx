@@ -24,6 +24,14 @@ export default function HomePage() {
           },
           link: "/news",
         },
+        {
+          text: {
+            uz: "Fotogalereya",
+            ru: "Фотогалерея",
+            en: "Photo Gallery",
+          },
+          link: "/photo-gallery",
+        },
       ]
     }
   ]
