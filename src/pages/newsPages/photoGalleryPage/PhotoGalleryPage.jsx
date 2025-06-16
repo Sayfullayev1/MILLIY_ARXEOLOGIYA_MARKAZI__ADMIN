@@ -115,7 +115,7 @@ export default function PhotoGalleryPage() {
     }
 
 
-    useEffect(() => {
+    function apiPhotoGalleryGetList() {
       const api = getApi();
       const token = localStorage.getItem('token');
       axios.get(`${api}/api/photo-gallery/get-list`, {
@@ -136,9 +136,33 @@ export default function PhotoGalleryPage() {
         .catch(error => {
           console.error('Ошибка при запросе метаданных галереи:', error);
         });
+    }
+
+
+    useEffect(() => {
+      apiPhotoGalleryGetList()
     }, []);
     
-  
+    // Удаление галереи по metaKey
+    const handleDeleteGallery = async (index) => {
+      
+      if (!window.confirm('Вы уверены, что хотите удалить эту галерею?')) return;
+      const api = getApi();
+      const token = localStorage.getItem('token');
+      try {
+        await axios.delete(`${api}/api/photo-gallery/delete/${index}`, {
+          headers: {
+            ...(token ? { Authorization: `Bearer ${token}` } : {})
+          }
+        });
+        // setGalleryMetaList(prev => prev.filter(item => item.metaKey !== index));
+        apiPhotoGalleryGetList()
+      } catch (err) {
+        alert('Ошибка при удалении галереи');
+        console.error(err);
+      }
+    };
+
   return (
     <div className={style.container}>
       <div className={style.formContainer}>
@@ -256,8 +280,8 @@ export default function PhotoGalleryPage() {
       <div className={style.gallerySection}>
         <h3 className={style.gallerySectionTitle}>Все фотогалереи:</h3>
         <div className={style.galleryCardsList}>
-          {galleryMetaList.map((item, idx) => (
-            <div key={idx} className={style.galleryCard}>
+          {galleryMetaList.map((item, index) => (
+            <div key={index} className={style.galleryCard}>
               <div className={style.galleryCardImgWrap}>
                 {item.mainImage && (
                   <img
@@ -292,6 +316,14 @@ export default function PhotoGalleryPage() {
                     </span>
                   )}
                 </div>
+                <button
+                  type="button"
+                  className={style.deleteBtn}
+                  onClick={() => handleDeleteGallery(index)}
+                >
+                  <span className={style.deleteIcon}>&#128465;</span>
+                  Удалить
+                </button>
               </div>
             </div>
           ))}
