@@ -1,6 +1,7 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import './newsPage.scss';
 import axios from 'axios';
+import RichTextNewsEditor, { getEditorHtml } from '../../../components/RichTextNewsEditor/RichTextNewsEditor';
 
 
 // const API_BASE_URL = 'http://localhost:3221';
@@ -25,6 +26,8 @@ export default function NewsPage() {
   });
 
   const [newsListData, setNewsListData] = useState([]);
+  const [editorContent, setEditorContent] = useState('');
+  const editorRef = useRef(null);
 
   const handleInputChange = (e, field, lang = null) => {
     if (field === 'image') {
@@ -132,6 +135,14 @@ export default function NewsPage() {
   }, [i]);
 
 
+  // Пример сохранения HTML-контента как "поста"
+  const handleSavePost = () => {
+    const html = getEditorHtml(editorRef);
+    // Здесь вы можете отправить html на сервер или отобразить как страницу
+    alert('HTML для публикации:\n' + html);
+    // Например, можно сохранить в базу данных, а потом отобразить на отдельной странице
+  };
+
   return (
     <div className="news-page">
       <form className="news-form" onSubmit={handleSubmit}>
@@ -204,6 +215,16 @@ export default function NewsPage() {
           </div>
         ))}
       </div>
+
+
+      <RichTextNewsEditor
+        value={editorContent}
+        onChange={setEditorContent}
+        ref={editorRef}
+      />
+      <button onClick={handleSavePost}>Сохранить как страницу</button>
+
+
     </div>
   );
 }
