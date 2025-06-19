@@ -66,16 +66,23 @@ const RichTextNewsEditor = forwardRef(({ value, onChange, height = 880 }, ref) =
             }
           },
           media_live_embeds: true,
-          media_url_resolver: function (data, resolve) {
-            // Вставка YouTube видео по ссылке
-            const ytMatch = data.url.match(
-              /(?:https?:\/\/)?(?:www\.)?(?:youtube\.com\/watch\?v=|youtu\.be\/)([\w-]{11})/
-            );
-            if (ytMatch) {
-              resolve({
-                html: `<iframe width="560" height="315" src="https://www.youtube.com/embed/${ytMatch[1]}" frameborder="0" allowfullscreen></iframe>`,
-              });
-            } else {
+          // Исправленный media_url_resolver для YouTube и безопасная обработка ошибок
+          media_url_resolver: function (data, resolve/*, reject*/) {
+            try {
+              // Поддержка ссылок вида https://www.youtube.com/watch?v=2l-dv_z4KUc и https://youtu.be/2l-dv_z4KUc
+              const ytMatch = data.url.match(
+                /(?:https?:\/\/)?(?:www\.)?(?:youtube\.com\/watch\?v=|youtu\.be\/)([\w\-]{11})/
+              );
+              if (ytMatch) {
+                resolve({
+                  html: `<iframe width="560" height="315" src="https://www.youtube.com/embed/${ytMatch[1]}" frameborder="0" allowfullscreen></iframe>`,
+                });
+              } else {
+                // TinyMCE сам обработает другие ссылки (например, Vimeo)
+                resolve({ html: '' });
+              }
+            } catch (e) {
+              // Безопасно обработать любые ошибки, чтобы не было "Media embed handler threw unknown error"
               resolve({ html: '' });
             }
           },

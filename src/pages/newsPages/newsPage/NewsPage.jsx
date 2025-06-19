@@ -1,12 +1,12 @@
 import React, { useState, useEffect, useRef } from 'react';
-import './newsPage.scss';
+import style from './newsPage.module.scss'; // Убедитесь, что файл newsPage.module.scss существует
+
+
 import axios from 'axios';
 import RichTextNewsEditor, { getEditorHtml } from '../../../components/RichTextNewsEditor/RichTextNewsEditor';
+import { getApi } from '../../../api/api';
 
 
-// const API_BASE_URL = 'http://localhost:3221';
-
-const API_BASE_URL = 'https://milliy-arxeologiya-markazi-admin-api.onrender.com';
 
 
 export default function NewsPage() {
@@ -18,17 +18,73 @@ export default function NewsPage() {
       uz: '',
       en: '',
     },
-    description: {
-      ru: '',
-      uz: '',
-      en: '',
-    },
+    date: '', // поле date теперь будет содержать и дату, и время
   });
 
   const [newsListData, setNewsListData] = useState([]);
   const [editorContent, setEditorContent] = useState('');
   const editorRef = useRef(null);
 
+
+
+
+  
+
+  // Пример сохранения HTML-контента как "поста"
+  const handleSavePost = async () => {
+    const html = getEditorHtml(editorRef);
+    const { title, image, date } = formData;
+
+    // Собираем все данные для отправки/отображения
+    const postData = {
+      title: { ...title },
+      image,
+      content: html,
+      date: date || new Date().toISOString().slice(0, 16), // YYYY-MM-DDTHH:mm
+    };
+
+    // Формируем FormData для отправки файла и данных
+    const dataToSend = new FormData();
+    if (image) dataToSend.append('image', image);
+    dataToSend.append('title_ru', title.ru);
+    dataToSend.append('title_uz', title.uz);
+    dataToSend.append('title_en', title.en);
+    dataToSend.append('date', postData.date);
+    dataToSend.append('content', html);
+
+    // Генерируем slug (пример на основе uz)
+    const slugify = (text) =>
+      (text || '')
+        .toLowerCase()
+        .replace(/\s+/g, '-')
+        .replace(/[^\w\-]+/g, '')
+        .replace(/\-\-+/g, '-')
+        .replace(/^-+/, '')
+        .replace(/-+$/, '');
+    dataToSend.append('slug', slugify(title.uz));
+
+    try {
+      const api = getApi();
+      const token = localStorage.getItem('token');
+      const apiUrl = api + '/api/news/push';
+      const response = await axios.post(apiUrl, dataToSend, {
+        headers: {
+          'Content-Type': 'multipart/form-data',
+          ...(token ? { Authorization: `Bearer ${token}` } : {})
+        }
+      });
+      alert('Новость успешно отправлена!');
+      
+      console.log('Ответ сервера:', response.data);
+    } catch (error) {
+      alert('Ошибка при отправке новости');
+      console.error(error);
+    }
+  };
+
+
+
+  // Добавьте функцию handleInputChange (если её нет)
   const handleInputChange = (e, field, lang = null) => {
     if (field === 'image') {
       setFormData({
@@ -51,102 +107,68 @@ export default function NewsPage() {
     }
   };
 
-
-
-  const [i, setI] = useState(0);
-
+  // Добавьте функцию handleSubmit (если её нет)
   const handleSubmit = (e) => {
     e.preventDefault();
-
-    const slugify = (text) =>
-      text
-        .toLowerCase()
-        .replace(/\s+/g, '-')
-        .replace(/[^\w\-]+/g, '')
-        .replace(/\-\-+/g, '-')
-        .replace(/^-+/, '')
-        .replace(/-+$/, '');
-
-    const generatedSlug = slugify(formData.title.uz);
-
-    const today = new Date();
-    const formattedDate =
-      today.getFullYear() +
-      '-' +
-      (today.getMonth() + 1).toString().padStart(2, '0') +
-      '-' +
-      today.getDate().toString().padStart(2, '0');
-
-    // Создаём объект FormData
-    const dataToSend = new FormData();
-    dataToSend.append('image', formData.image); // Добавляем файл
-    dataToSend.append('slug', generatedSlug);
-    dataToSend.append('date', formattedDate);
-    dataToSend.append('title_ru', formData.title.ru);
-    dataToSend.append('title_uz', formData.title.uz);
-    dataToSend.append('title_en', formData.title.en);
-    dataToSend.append('description_ru', formData.description.ru);
-    dataToSend.append('description_uz', formData.description.uz);
-    dataToSend.append('description_en', formData.description.en);
-
-    const fetchData = async () => {
-      try {
-        const token = localStorage.getItem('token');
-        const response = await axios.post(
-          `${API_BASE_URL}/api/newsData/add`,
-          dataToSend,
-          {
-            headers: {
-              Authorization: `Bearer ${token}`,
-              'Content-Type': 'multipart/form-data', // Указываем, что отправляем FormData
-            },
-          }
-        );
-
-        console.log('Data sent successfully:', response.data);
-      } catch (error) {
-        console.error('Error sending data:', error.response?.data || error.message);
-      }
-    };
-
-    fetchData();
-
-    setI(i + 1); // Увеличиваем счётчик для обновления данных
+    // Здесь можно собрать данные из formData и editorContent и отправить на сервер
+    handleSavePost();
   };
+
+
+
 
   useEffect(() => {
-    const fetchData = async () => {
-      try {
-        const token = localStorage.getItem('token'); // Получаем токен из localStorage
-        const response = await axios.get(`${API_BASE_URL}/api/newsData/all`, {
-          // headers: {
-          //   Authorization: `Bearer ${token}`, // Добавляем токен в заголовок
-          // },
+    const fetchNewsList = async () => { 
+      const api = getApi();
+      const token = localStorage.getItem('token');
+
+      axios.get(`${api}/api/news/get-list`, {
+        headers: {
+          ...(token ? { Authorization: `Bearer ${token}` } : {})
+        }
+      })
+        .then(response => {
+            console.log('Метаданные галереи:', response.data.data);
+            setNewsListData(response.data.data || []);
+        })
+        .catch(error => {
+          console.error('Ошибка при запросе метаданных галереи:', error);
         });
-        console.log('Data fetched:', response.data);
-        setNewsListData(response.data.data); // Устанавливаем данные в состояние
-      } catch (error) {
-        console.error('Error fetching data:', error);
-      }
-    };
-
-    fetchData();
-
-  }, [i]);
+    }
+    fetchNewsList();
+  }, []);
 
 
-  // Пример сохранения HTML-контента как "поста"
-  const handleSavePost = () => {
-    const html = getEditorHtml(editorRef);
-    // Здесь вы можете отправить html на сервер или отобразить как страницу
-    alert('HTML для публикации:\n' + html);
-    // Например, можно сохранить в базу данных, а потом отобразить на отдельной странице
+  function getDesign(item) {
+    setEditorContent(item)
+  }
+
+  // Функция для удаления новости
+  const handleDeleteNews = async (index) => {
+    if (!window.confirm('Вы уверены, что хотите удалить эту новость?')) return;
+    const api = getApi();
+    const token = localStorage.getItem('token');
+    try {
+      // id - это индекс в массиве, как на сервере (newsMetaList)
+      await axios.delete(`${api}/api/news/delete/${index}`, {
+        headers: {
+          ...(token ? { Authorization: `Bearer ${token}` } : {})
+        }
+      });
+      // После удаления обновляем список
+      setNewsListData(prev => prev.filter((_, i) => i !== index));
+    } catch (error) {
+      alert('Ошибка при удалении новости');
+      console.error(error);
+    }
   };
 
+
+
   return (
-    <div className="news-page">
-      <form className="news-form" onSubmit={handleSubmit}>
-        <div className="form-group">
+    <div className={style.newsPage}>
+      <form className={style.newsForm} onSubmit={handleSubmit}>
+        <div className={style.formGroup}>
           <label htmlFor="image">Фото:</label>
           <input
             type="file"
@@ -156,7 +178,7 @@ export default function NewsPage() {
           />
         </div>
 
-        <div className="form-group">
+        <div className={style.formGroup}>
           <label>Заголовок:</label>
           <input
             type="text"
@@ -178,53 +200,60 @@ export default function NewsPage() {
           />
         </div>
 
-        <div className="form-group">
-          <label>Текст:</label>
-          <textarea
-            placeholder="UZ"
-            value={formData.description.uz}
-            onChange={(e) => handleInputChange(e, 'description', 'uz')}
-          />
-          <textarea
-            placeholder="RU"
-            value={formData.description.ru}
-            onChange={(e) => handleInputChange(e, 'description', 'ru')}
-          />
-          <textarea
-            placeholder="EN"
-            value={formData.description.en}
-            onChange={(e) => handleInputChange(e, 'description', 'en')}
+        <div className={style.formGroup}>
+          <label>Дата и время публикации:</label>
+          <input
+            type="datetime-local"
+            value={formData.date}
+            onChange={e => handleInputChange(e, 'date')}
           />
         </div>
-
-        <button type="submit">Сохранить</button>
       </form>
+      
 
+      <div className={style.richTextNewsEditor}>
 
-      <div className="news-list">
-        {newsListData.map((item, index) => (
-          <div className="news-card" key={index}>
-            <div className="news-card__image-wrapper">
-              <img src={item?.image} alt="News" className="news-card__image" />
+          <RichTextNewsEditor
+            value={editorContent}
+            onChange={setEditorContent}
+            ref={editorRef}
+          />
+
+          <button className={style.richTextNewsEditor__button} onClick={() => handleSavePost()}>Сохранить</button>
+
+      </div>
+        
+
+      
+
+      
+
+      <div className={style.newsList}>
+        {(Array.isArray(newsListData) ? newsListData : []).map((item, index) => (
+          <div className={style.newsCard} key={index}>
+            <div className={style.newsCard__imageWrapper}>
+              <img src={item?.image} alt="News" className={style.newsCard__image} />
             </div>
-            <div className="news-card__content">
-              <h3 className="news-card__title">{item?.title.ru}</h3>
-              <p className="news-card__description">{item?.description.ru}</p>
-              <p className="news-card__date">{item?.date}</p>
+            <div className={style.newsCard__content}>
+              <h3 className={style.newsCard__title}>{item?.title?.ru}</h3>
+              <p className={style.newsCard__date}>{item?.date}</p>
+
+              <div className={style.newsCard__buttonWrapper}>
+                <button className={style.newsCard__button} onClick={() => getDesign(item?.content)}>
+                  Посмотреть новость 
+                </button>
+                <button
+                  className={style.newsCard__button}
+                  style={{ background: '#e53935', color: '#fff', borderColor: '#e53935', marginLeft: 8 }}
+                  onClick={() => handleDeleteNews(index)}
+                >
+                  Удалить
+                </button>
+              </div>
             </div>
           </div>
         ))}
       </div>
-
-
-      <RichTextNewsEditor
-        value={editorContent}
-        onChange={setEditorContent}
-        ref={editorRef}
-      />
-      <button onClick={handleSavePost}>Сохранить как страницу</button>
-
-
     </div>
   );
 }
