@@ -33,6 +33,39 @@ export default function NewsPage() {
 
 
 
+  useEffect(() => {
+    // const api = getApi();
+    let api = "http://localhost:3100"; // Замените на ваш API URL
+    // axios.get(`${api}/api/${lastSegment}/get-published-count`)
+    //   .then((response) => {
+    //     console.log('Общее количество опубликованных данных:', response.data.total);
+    //   })
+    //   .catch((error) => {
+    //     console.error('Ошибка при получении данных:', error);
+    //   });
+
+
+    const fetchNewsList = async () => { 
+      // const api = getApi();
+      const token = localStorage.getItem('token');
+
+      axios.get(`${api}/api/${lastSegment}/get-published-count`, {
+        headers: {
+          ...(token ? { Authorization: `Bearer ${token}` } : {})
+        }
+      })
+        .then(response => {
+            console.log('Метаданные галереи:', response.data);
+            // setNewsListData(response.data.data || []);
+        })
+        .catch(error => {
+          console.error('Ошибка при запросе метаданных галереи:', error);
+        });
+    }
+    fetchNewsList();
+  }, []);
+
+
 
   // Пример сохранения HTML-контента как "поста"
   const handleSavePost = async () => {
