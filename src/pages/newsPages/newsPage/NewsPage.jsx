@@ -70,7 +70,7 @@ export default function NewsPage() {
     try {
       const api = getApi();
       const token = localStorage.getItem('token');
-      const apiUrl = api + '/api/'+ lastSegment +'/push';
+      const apiUrl = `${api}/api/${lastSegment}/push`;
       const response = await axios.post(apiUrl, dataToSend, {
         headers: {
           'Content-Type': 'multipart/form-data',
