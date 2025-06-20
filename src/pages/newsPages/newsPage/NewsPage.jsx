@@ -6,7 +6,7 @@ import axios from 'axios';
 import RichTextNewsEditor, { getEditorHtml } from '../../../components/RichTextNewsEditor/RichTextNewsEditor';
 import { getApi } from '../../../api/api';
 
-
+import { useLocation } from 'react-router-dom';
 
 
 export default function NewsPage() {
@@ -25,10 +25,14 @@ export default function NewsPage() {
   const [editorContent, setEditorContent] = useState('');
   const editorRef = useRef(null);
 
+  // Инициализация редактора с пустым контентом
+
+
+  const location = useLocation();
+  const lastSegment = location.pathname.split('/').filter(Boolean).pop();
 
 
 
-  
 
   // Пример сохранения HTML-контента как "поста"
   const handleSavePost = async () => {
@@ -66,7 +70,7 @@ export default function NewsPage() {
     try {
       const api = getApi();
       const token = localStorage.getItem('token');
-      const apiUrl = api + '/api/news/push';
+      const apiUrl = api + '/api/'+ lastSegment +'/push';
       const response = await axios.post(apiUrl, dataToSend, {
         headers: {
           'Content-Type': 'multipart/form-data',
@@ -122,7 +126,7 @@ export default function NewsPage() {
       const api = getApi();
       const token = localStorage.getItem('token');
 
-      axios.get(`${api}/api/news/get-list`, {
+      axios.get(`${api}/api/${lastSegment}/get-list`, {
         headers: {
           ...(token ? { Authorization: `Bearer ${token}` } : {})
         }
@@ -150,7 +154,7 @@ export default function NewsPage() {
     const token = localStorage.getItem('token');
     try {
       // id - это индекс в массиве, как на сервере (newsMetaList)
-      await axios.delete(`${api}/api/news/delete/${index}`, {
+      await axios.delete(`${api}/api/${lastSegment}/delete/${index}`, {
         headers: {
           ...(token ? { Authorization: `Bearer ${token}` } : {})
         }

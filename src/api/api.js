@@ -1,10 +1,10 @@
 import axios from 'axios';
 
-const API_BASE_URL = 'https://milliy-arxeologiya-markazi-admin-api.onrender.com'; // Базовый URL для API
+// const API_BASE_URL = 'https://milliy-arxeologiya-markazi-admin-api.onrender.com'; // Базовый URL для API
 
 
 
-// const API_BASE_URL = 'http://localhost:3100';
+const API_BASE_URL = 'http://localhost:3104';
 
 
 export const getApi = () => {

@@ -26,6 +26,38 @@ export default function HomePage() {
         },
         {
           text: {
+            uz: "E'lonlar",
+            ru: "Обьявления",
+            en: "Ads",
+          },
+          link: "/ads",
+        },
+        {
+          text: {
+            uz: "Tadbirlar",
+            ru: "События",
+            en: "Events",
+          },
+          link: "/events",
+        },
+        {
+          text: {
+            uz: "Chorshanba o'qishlari",
+            ru: "Чтения по средам",
+            en: "Wednesday readings",
+          },
+          link: "/wednesday-readings",
+        },
+        {
+          text: {
+            uz: "Maqolalar",
+            ru: "Статьи",
+            en: "Articles",
+          },
+          link: "/articles",
+        },
+        {
+          text: {
             uz: "Fotogalereya",
             ru: "Фотогалерея",
             en: "Photo Gallery",

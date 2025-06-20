@@ -38,6 +38,14 @@ root.render(
             
             <Route path="/:lang/news" element={<NewsPage />} />
 
+            <Route path="/:lang/ads" element={<NewsPage />} />
+
+            <Route path="/:lang/events" element={<NewsPage />} />
+
+            <Route path="/:lang/wednesday-readings" element={<NewsPage />} />
+
+            <Route path="/:lang/articles" element={<NewsPage />} />
+
             <Route path="/:lang/photo-gallery" element={<PhotoGalleryPage />} />
 
           </Route>
