@@ -65,6 +65,23 @@ export default function HomePage() {
           link: "/photo-gallery",
         },
       ]
+    },
+    {
+      title: {
+        uz: "Aloqa",
+        ru: "Контакты",
+        en: "Contacts",
+      },
+      items: [
+        {
+          text: {
+            uz: "Aloqa",
+            ru: "Контакты",
+            en: "Contacts",
+          },
+          link: "/contacts",
+        },
+      ]      
     }
   ]
 

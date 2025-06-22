@@ -17,6 +17,9 @@ import NewsPage from './pages/newsPages/newsPage/NewsPage';
 import PhotoGalleryPage from './pages/newsPages/photoGalleryPage/PhotoGalleryPage';
 
 
+import ContactsPage from './pages/contactsPage/ContactsPage';
+
+
 
 
 
@@ -47,6 +50,8 @@ root.render(
             <Route path="/:lang/articles" element={<NewsPage />} />
 
             <Route path="/:lang/photo-gallery" element={<PhotoGalleryPage />} />
+
+            <Route path="/:lang/contacts" element={<ContactsPage />} />
 
           </Route>
 
