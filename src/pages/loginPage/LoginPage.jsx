@@ -20,7 +20,7 @@ export default function LoginPage() {
 
   const handleKeyDownInputRef2 = (event) => {
     if (event.key === 'Enter') {
-      passwordCheck(navigate("/uz"), username, password, setErrorCode);
+      passwordCheck(navigate, username, password, setErrorCode);
     }
   };
 
